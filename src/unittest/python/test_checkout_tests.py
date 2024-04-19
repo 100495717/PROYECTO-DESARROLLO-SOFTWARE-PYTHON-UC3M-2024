@@ -191,7 +191,8 @@ class TestDeliverProduct(TestCase):
         with self.assertRaises(HotelManagementException) as context_manager:
             my_manager.guest_checkout(
                 "4f57880d4240350db9b276c84edaacc923a63906a408cc8da2b52c49213d3859")
-        self.assertEqual(context_manager.exception.message, "Error: store checkin not found")
+        self.assertEqual(context_manager.exception.message, "Error: file "
+                                                            "input not found")
 
     @freeze_time("2023-03-18")
     def test_guest_checkout_store_check_in_is_empty(self):
