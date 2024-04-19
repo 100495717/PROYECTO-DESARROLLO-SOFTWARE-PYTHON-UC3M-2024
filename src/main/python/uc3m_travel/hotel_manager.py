@@ -87,26 +87,26 @@ class HotelManager:
         return d[8] == c[r]
 
 
-    def validate_localizer(self, l):
+    def validate_localizer(self, localizer):
         """validates the localizer format using a regex"""
         r = r'^[a-fA-F0-9]{32}$'
         myregex = re.compile(r)
-        if not myregex.fullmatch(l):
+        if not myregex.fullmatch(localizer):
             raise HotelManagementException("Invalid localizer")
-        return l
+        return localizer
 
-    def validate_roomkey(self, l):
+    def validate_roomkey(self, localizer):
         """validates the roomkey format using a regex"""
         r = r'^[a-fA-F0-9]{64}$'
         myregex = re.compile(r)
-        if not myregex.fullmatch(l):
+        if not myregex.fullmatch(localizer):
             raise HotelManagementException("Invalid room key format")
-        return l
+        return localizer
 
-    def read_data_from_json(self, fi):
+    def read_data_from_json(self, file_input):
         """reads the content of a json file with two fields: CreditCard and phoneNumber"""
         try:
-            with open(fi, encoding='utf-8') as f:
+            with open(file_input, encoding='utf-8') as f:
                 json_data = json.load(f)
         except FileNotFoundError as e:
             raise HotelManagementException("Wrong file or file path") from e
@@ -115,7 +115,7 @@ class HotelManager:
         try:
             c = json_data["CreditCard"]
             p = json_data["phoneNumber"]
-            req = HotelReservation(id_card="12345678Z",
+            request = HotelReservation(id_card="12345678Z",
                                    credit_card_number=c,
                                    name_surname="John Doe",
                                    phone_number=p,
@@ -127,7 +127,7 @@ class HotelManager:
         if not self.validatecreditcard(c):
             raise HotelManagementException("Invalid credit card number")
         # Close the file
-        return req
+        return request
 
     # pylint: disable=too-many-arguments
     def room_reservation(self,
