@@ -1,11 +1,11 @@
-from uc3m_travel.attribute.attribute import Attribute
+from uc3m_travel.attributes.attribute import Attribute
 from uc3m_travel.hotel_management_exception import HotelManagementException
 
 class NumDays(Attribute):
     def __init__(self, valor_attr):
         self._regex_pattern = ""
         self._error_mensaje = ""
-        self._atr_value = self._validate(valor_attr)
+        self._valor_attr = self._validate(valor_attr)
 
     def _validate(self, num_days):
         """validates the number of days"""
