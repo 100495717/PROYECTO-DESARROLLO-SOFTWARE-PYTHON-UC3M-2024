@@ -15,13 +15,14 @@ class Idcard(Attribute):
             raise HotelManagementException("Invalid Idcard symbols")
         return id_card
 
-    def validate_dni( dni ):
+    def validate_dni(self, dni):
         """RETURN TRUE IF THE DNI IS RIGHT, OR FALSE IN OTHER CASE"""
-        valid_symbols = {"0": "T", "1": "R", "2": "W", "3": "A", "4": "G",
-                     "5": "M",
-             "6": "Y", "7": "F", "8": "P", "9": "D", "10": "X", "11": "B",
-             "12": "N", "13": "J", "14": "Z", "15": "S", "16": "Q", "17": "V",
-             "18": "H", "19": "L", "20": "C", "21": "K", "22": "E"}
-        int_dni = int(dni[ 0:8 ])
+        valid_symbols = {
+            "0": "T", "1": "R", "2": "W", "3": "A", "4": "G",
+            "5": "M",
+            "6": "Y", "7": "F", "8": "P", "9": "D", "10": "X", "11": "B",
+            "12": "N", "13": "J", "14": "Z", "15": "S", "16": "Q", "17": "V",
+            "18": "H", "19": "L", "20": "C", "21": "K", "22": "E"}
+        int_dni = int(dni[0:8])
         str_dni = str(int_dni % 23)
         return dni[8] == valid_symbols[str_dni]

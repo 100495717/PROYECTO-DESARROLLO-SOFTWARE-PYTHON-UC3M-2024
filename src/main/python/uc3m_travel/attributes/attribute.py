@@ -2,6 +2,7 @@ import re
 
 from uc3m_travel.hotel_management_exception import HotelManagementException
 
+
 class Attribute:
     def __init__(self):
         self._regex_pattern = ""
@@ -21,5 +22,5 @@ class Attribute:
         return self._valor_attr
 
     @valor.setter
-    def valor(self,valor_attr):
+    def valor(self, valor_attr):
         self._valor_attr = valor_attr

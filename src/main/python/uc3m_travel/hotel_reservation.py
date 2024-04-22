@@ -10,17 +10,19 @@ from .attributes.attribute_arrival import Arrivaldate
 from .attributes.attribute_roomtype import RoomType
 from .attributes.attribute_creditcard import Creditcard
 from .attributes.attribute_numday import NumDays
+
+
 class HotelReservation:
     """Class for representing hotel reservations"""
-    #pylint: disable=too-many-arguments, too-many-instance-attributes
+    # pylint: disable=too-many-arguments, too-many-instance-attributes
     def __init__(self,
-                 id_card:str,
-                 credit_card_number:str,
-                 name_surname:str,
-                 phone_number:str,
-                 room_type:str,
-                 arrival:str,
-                 num_days:int):
+                 id_card: str,
+                 credit_card_number: str,
+                 name_surname: str,
+                 phone_number: str,
+                 room_type: str,
+                 arrival: str,
+                 num_days: int):
         """constructor of reservation objects"""
         self.__credit_card_number = Creditcard(credit_card_number).value
         self.__id_card = Idcard(id_card).value
@@ -31,11 +33,12 @@ class HotelReservation:
         self.__phone_number = PhoneNumber(phone_number).value
         self.__room_type = RoomType(room_type).value
         self.__num_days = NumDays(num_days).value
-        self.__localizer =  hashlib.md5(str(self).encode()).hexdigest()
+        self.__localizer = hashlib.md5(str(self).encode()).hexdigest()
 
     def __str__(self):
-        """return a json string with the elements required to calculate the localizer"""
-        #VERY IMPORTANT: JSON KEYS CANNOT BE RENAMED
+        """return a json string with the
+        elements required to calculate the localizer"""
+        # VERY IMPORTANT: JSON KEYS CANNOT BE RENAMED
         json_info = {"id_card": self.__id_card,
                      "name_surname": self.__name_surname,
                      "credit_card": self.__credit_card_number,
@@ -46,10 +49,12 @@ class HotelReservation:
                      "room_type": self.__room_type,
                      }
         return "HotelReservation:" + json_info.__str__()
+
     @property
     def credit_card(self):
         """property for getting and setting the credit_card number"""
         return self.__credit_card_number
+
     @credit_card.setter
     def credit_card(self, value):
         self.__credit_card_number = value
@@ -58,10 +63,10 @@ class HotelReservation:
     def id_card(self):
         """property for getting and setting the id_card"""
         return self.__id_card
+
     @id_card.setter
     def id_card(self, value):
         self.__id_card = value
-
 
     @property
     def localizer(self):

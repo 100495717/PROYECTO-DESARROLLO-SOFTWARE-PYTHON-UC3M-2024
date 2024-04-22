@@ -1,5 +1,6 @@
 from uc3m_travel.attributes.attribute import Attribute
 
+
 class Arrivaldate(Attribute):
 
     def __init__(self, valor_attr):

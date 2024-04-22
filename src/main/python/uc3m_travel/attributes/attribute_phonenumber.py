@@ -1,5 +1,6 @@
 from uc3m_travel.attributes.attribute import Attribute
 
+
 class PhoneNumber(Attribute):
     def __init__(self, valor_attr):
         self._regex_pattern = r"^(\+)[0-9]{9}"
