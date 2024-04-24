@@ -1,9 +1,9 @@
 ''' Class HotelStay (GE2.2) '''
 from datetime import datetime
 import hashlib
-from .attributes.attribute_idcard import Idcard
-from .attributes.attribute_roomtype import RoomType
-from .attributes.attribute_localizer import Localizer
+from uc3m_travel.attributes.attribute_idcard import Idcard
+from uc3m_travel.attributes.attribute_roomtype import RoomType
+from uc3m_travel.attributes.attribute_localizer import Localizer
 
 
 class HotelStay():
@@ -15,9 +15,9 @@ class HotelStay():
                  roomtype: str):
         """constructor for HotelStay objects"""
         self.__alg = "SHA-256"
-        self.__type = RoomType(roomtype).value
-        self.__idcard = Idcard(idcard).value
-        self.__localizer = Localizer(localizer).value
+        self.__type = RoomType(roomtype)._valor_attr
+        self.__idcard = Idcard(idcard)._valor_attr
+        self.__localizer = Localizer(localizer)._valor_attr
         justnow = datetime.utcnow()
         self.__arrival = datetime.timestamp(justnow)
         # timestamp is represented in seconds.miliseconds
