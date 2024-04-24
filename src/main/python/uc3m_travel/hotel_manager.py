@@ -2,10 +2,10 @@
 import re
 import json
 from datetime import datetime
-from .hotel_management_exception import HotelManagementException
-from .hotel_reservation import HotelReservation
-from .hotel_stay import HotelStay
-from .hotel_management_config import JSON_FILES_PATH
+from uc3m_travel.hotel_management_exception import HotelManagementException
+from uc3m_travel.hotel_reservation import HotelReservation
+from uc3m_travel.hotel_stay import HotelStay
+from uc3m_travel.hotel_management_config import JSON_FILES_PATH
 from freezegun import freeze_time
 from .attributes.attribute_idcard import Idcard
 from .attributes.attribute_localizer import Localizer

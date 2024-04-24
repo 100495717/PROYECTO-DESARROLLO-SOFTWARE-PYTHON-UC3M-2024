@@ -4,10 +4,10 @@ import os
 import hashlib
 import json
 from freezegun import freeze_time
-from uc3m_travel import HotelManager
-from uc3m_travel import HotelManagementException
-from uc3m_travel import JSON_FILES_PATH
-from uc3m_travel import JSON_FILES_GUEST_ARRIVAL
+from uc3m_travel.hotel_manager import HotelManager
+from uc3m_travel.hotel_management_exception import HotelManagementException
+from uc3m_travel.hotel_management_config import JSON_FILES_PATH
+from uc3m_travel.hotel_management_config import (JSON_FILES_GUEST_ARRIVAL)
 
 
 class TestDeliverProduct(TestCase):

@@ -5,7 +5,7 @@ from uc3m_travel.hotel_management_exception import HotelManagementException
 class NumDays(Attribute):
     def __init__(self, valor_attr):
         self._regex_pattern = ""
-        self._error_mensaje = ""
+        self._mensaje_error = ""
         self._valor_attr = self._validate(valor_attr)
 
     def _validate(self, num_days):

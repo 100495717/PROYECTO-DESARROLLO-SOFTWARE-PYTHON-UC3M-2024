@@ -6,3 +6,4 @@ class SaveReservation(StoreDataRoot):
 
     def __init__(self):
         self._input_file = JSON_FILES_PATH + "store_reservation.json"
+

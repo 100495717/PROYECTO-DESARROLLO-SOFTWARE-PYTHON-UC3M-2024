@@ -6,10 +6,10 @@ import hashlib
 from os import remove
 from unittest import TestCase
 from freezegun import freeze_time
-from uc3m_travel import (JSON_FILES_PATH,
-                         HotelManager,
-                         HotelReservation,
-                         HotelManagementException)
+from uc3m_travel.hotel_manager import HotelManager
+from uc3m_travel.hotel_management_exception import HotelManagementException
+from uc3m_travel.hotel_management_config import JSON_FILES_PATH
+from uc3m_travel.hotel_reservation import HotelReservation
 
 
 class TestHotelReservation(TestCase):
