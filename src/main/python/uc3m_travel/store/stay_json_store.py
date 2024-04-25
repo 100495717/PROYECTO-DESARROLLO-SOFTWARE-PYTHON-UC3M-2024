@@ -5,8 +5,8 @@ from uc3m_travel.hotel_management_config import JSON_FILES_PATH
 from uc3m_travel.hotel_management_exception import HotelManagementException
 
 class SaveCheckin(StoreDataRoot):
-    __input_file = JSON_FILES_PATH + "store_check_in.json"
-    __input_list = []
+    _input_file = JSON_FILES_PATH + "store_check_in.json"
+    _input_list = []
 
     def check_reservation(self, localizer, store_list):
         for element in store_list:
@@ -14,14 +14,15 @@ class SaveCheckin(StoreDataRoot):
                 return element
             raise HotelManagementException("Error. localizer not found")
 
-    def read_checkin_create_if_not(self, file_store):
+    def load_reservation_store(self):
         try:
-            with open(file_store, "r", encoding= "utf-8", newline="") as f:
-                store_list = json.load(f)
+            with open(self._input_file, "r", encoding= "utf-8", newline="") as f:
+                self._input_list = json.load(f)
         except FileNotFoundError as exc:
             raise HotelManagementException("Error: store reservation not "
                                            "found") from exc
         except json.JSONDecodeError as exc:
             raise HotelManagementException("JSON Decode Error - Wrong JSON "
                                            "Format") from exc
-        return store_list
+        return self._input_list
+

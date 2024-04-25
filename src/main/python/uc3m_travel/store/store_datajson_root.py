@@ -3,12 +3,12 @@ from uc3m_travel.hotel_management_exception import HotelManagementException
 
 
 class StoreDataRoot:
-    __input_file = ""
-    __data_list = []
-    __mensaje_encontrado = ""
-    __mensaje_no_encontrado = ""
+    _input_file = ""
+    _input_list = []
+    _mensaje_encontrado = ""
+    _mensaje_no_encontrado = ""
     def __init__(self):
-        self.readjson_create_if_not(self.__input_file)
+        self.readjson_create_if_not(self._input_file)
 
     def readjson_create_if_not(self, file_almacen):
         try:
@@ -39,12 +39,12 @@ class StoreDataRoot:
             raise HotelManagementException("Wrong file  or file path") from ex
 
     def write_item(self, my_reservation):
-        self.readjson_create_if_not(self.__input_file)
+        self.readjson_create_if_not(self._input_file)
         self._input_list.append(my_reservation.__dict__)
-        self.write_json(self.__input_file)
+        self.write_json(self._input_file)
 
     def check_item(self,dato,llave):
-        self.readjson_create_if_not(self.__input_file)
+        self.readjson_create_if_not(self._input_file)
         for x in self._input_list:
             if dato == x[llave]:
-                raise HotelManagementException(self.__mensaje_encontrado)
+                raise HotelManagementException(self._mensaje_encontrado)
