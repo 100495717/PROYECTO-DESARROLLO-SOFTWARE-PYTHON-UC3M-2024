@@ -57,11 +57,6 @@ class HotelReservation:
                                "_HotelReservation__id_card")
         reservation.write_item(my_reservation)
 
-
-
-
-
-
     @property
     def credit_card(self):
         """property for getting and setting the credit_card number"""
@@ -84,6 +79,21 @@ class HotelReservation:
     def localizer(self):
         """Returns the md5 signature"""
         return self.__localizer
+
+    @property
+    def arrival(self):
+        """property for getting the arrival"""
+        return self.__arrival
+
+    @property
+    def room_type(self):
+        """property for getting the room_type"""
+        return self.__room_type
+
+    @property
+    def num_days(self):
+        """property for getting the num_days"""
+        return self.__num_days
 
 
     @classmethod
