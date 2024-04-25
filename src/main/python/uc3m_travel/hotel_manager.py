@@ -52,15 +52,20 @@ class HotelManager:
 
             # lee el fichero y en caso de no existir crea una lista vacía
 
-            new_reservation = SaveReservation()
+            #new_reservation = SaveReservation()
             # se comprueba que la reserva no exista
-            new_reservation.check_item_in_json(my_reservation)
+            #new_reservation.check_item_in_json(my_reservation)
 
             # lleno la lista con los datos de la reserva
-            new_reservation.write_item(my_reservation)
+            #new_reservation.write_item(my_reservation)
 
             # lo añado al fichero
-            new_reservation.write_json()
+            #new_reservation.write_json()
+
+
+            new_reservation = HotelReservation
+
+            new_reservation.save_reservation(self,my_reservation)
 
             return my_reservation.localizer
 
@@ -68,48 +73,12 @@ class HotelManager:
             """manages the arrival of a guest with a reservation"""
             input_list = self.readjson_only(file_input)
 
-            # comprobar valores del fichero
-            try:
-                my_localizer = input_list["Localizer"]
-                my_id_card = input_list["IdCard"]
-            except KeyError as e:
-                raise HotelManagementException("Error - "
-                                               "Invalid Key in JSON") from e
+            id_card = input_list["IdCard"]
+            localizer = input_list["Localizer"]
 
-            # Validamos id_card
-            Idcard(my_id_card)
-            # Y el localizer
-            Localizer(my_localizer)
+            new_reservation = HotelReservation
+            new_reservation.create_reservation(id_card,localizer)
 
-            # buscar en almacen
-            file_input = JSON_FILES_PATH + "store_reservation.json"
-
-            # leo los datos del fichero , si no existe deber dar error porque el
-            # almacen de reservaa
-            # debe existir para hacer el checkin
-            input_list = self.readjson_only(file_input)
-            # compruebo si esa reserva esta en el almacen
-
-            (reservation_days, reservation_room_type,
-             reservation_date_timestamp, reservation_credit_card,
-             reservation_date_arrival, reservation_name, reservation_phone,
-             reservation_id_card) = self.mi_reserva(my_id_card, my_localizer,
-                                                    input_list)
-            # regenrar clave y ver si coincide
-            reservation_date = datetime.fromtimestamp(reservation_date_timestamp)
-
-            with freeze_time(reservation_date):
-                new_reservation = HotelReservation(
-                    credit_card_number=reservation_credit_card,
-                    id_card=reservation_id_card,
-                    num_days=reservation_days,
-                    room_type=reservation_room_type,
-                    arrival=reservation_date_arrival,
-                    name_surname=reservation_name,
-                    phone_number=reservation_phone)
-            if new_reservation.localizer != my_localizer:
-                raise HotelManagementException("Error: "
-                                               "reservation has been manipulated")
 
             # compruebo si hoy es la fecha de checkin
             reservation_format = "%d/%m/%Y"
@@ -146,31 +115,6 @@ class HotelManager:
 
             return my_checkin.room_key
 
-        def mi_reserva(self, my_id_card, my_localizer, input_list):
-            found = False
-            for item in input_list:
-                if my_localizer == item["_HotelReservation__localizer"]:
-                    reservation_days = item["_HotelReservation__num_days"]
-                    reservation_room_type = item["_HotelReservation__room_type"]
-                    reservation_date_timestamp = item[("_HotelReservation__"
-                                                       "reservation_date")]
-                    reservation_credit_card = item[("_HotelReservation__"
-                                                    "credit_card_number")]
-                    reservation_date_arrival = item["_HotelReservation__arrival"]
-                    reservation_name = item["_HotelReservation__name_surname"]
-                    reservation_phone = item["_HotelReservation__phone_number"]
-                    reservation_id_card = item["_HotelReservation__id_card"]
-                    found = True
-
-            if not found:
-                raise HotelManagementException("Error: localizer not found")
-            if my_id_card != reservation_id_card:
-                raise HotelManagementException("Error: Localizer is not correct "
-                                               "for this IdCard")
-            return (reservation_days, reservation_room_type,
-                    reservation_date_timestamp, reservation_credit_card,
-                    reservation_date_arrival, reservation_name,
-                    reservation_phone, reservation_id_card)
 
         def readjson_only(self, file_input):
             try:

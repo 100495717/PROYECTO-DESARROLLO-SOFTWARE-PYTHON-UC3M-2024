@@ -3,13 +3,16 @@ from uc3m_travel.hotel_management_exception import HotelManagementException
 
 
 class StoreDataRoot:
+    __input_file = ""
+    __data_list = []
+    __mensaje_encontrado = ""
+    __mensaje_no_encontrado = ""
     def __init__(self):
-        self._file_input = ""
-        self._input_list = []
+        self.readjson_create_if_not(self.__input_file)
 
-    def readjson_create_if_not(self):
+    def readjson_create_if_not(self, file_almacen):
         try:
-            with (open(self._file_input, "r", encoding="utf-8", newline="") as
+            with (open(file_almacen, "r", encoding="utf-8", newline="") as
                   file):
                 self._input_list = json.load(file)
         except FileNotFoundError:
@@ -19,21 +22,29 @@ class StoreDataRoot:
                 "JSON Decode Error - Wrong JSON Format") from ex
         return self._input_list
 
-    def check_item_in_json(self, my_reservation):
-        for item in self._input_list:
-            if (my_reservation.localizer ==
-                    item["_HotelReservation__localizer"]):
-                raise HotelManagementException("Reservation already exists")
-            if my_reservation.id_card == item["_HotelReservation__id_card"]:
-                raise HotelManagementException("This ID card has another reservation")
+    #def check_item_in_json(self, my_reservation):
+        #for item in self._input_list:
+            #if (my_reservation.localizer ==
+                    #item["_HotelReservation__localizer"]):
+                #raise HotelManagementException("Reservation already exists")
+            #if my_reservation.id_card == item["_HotelReservation__id_card"]:
+                #raise HotelManagementException("This ID card has another reservation")
 
-    def write_json(self):
+    def write_json(self, file_almacen):
         try:
-            with (open(self._file_input, "w", encoding="utf-8", newline="") as
+            with (open(file_almacen, "w", encoding="utf-8", newline="") as
                   file):
-                json.dump(self._input_list, file, indent=2)
+                json.dump(file_almacen, file, indent=2)
         except FileNotFoundError as ex:
             raise HotelManagementException("Wrong file  or file path") from ex
 
     def write_item(self, my_reservation):
+        self.readjson_create_if_not(self.__input_file)
         self._input_list.append(my_reservation.__dict__)
+        self.write_json(self.__input_file)
+
+    def check_item(self,dato,llave):
+        self.readjson_create_if_not(self.__input_file)
+        for x in self._input_list:
+            if dato == x[llave]:
+                raise HotelManagementException(self.__mensaje_encontrado)

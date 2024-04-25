@@ -4,12 +4,14 @@ from datetime import datetime
 import re
 from uc3m_travel.hotel_management_exception import HotelManagementException
 from uc3m_travel.attributes.attribute_idcard import Idcard
+from uc3m_travel.attributes.attribute_localizer import Localizer
 from uc3m_travel.attributes.attribute_namesurname import NameSurname
 from uc3m_travel.attributes.attribute_phonenumber import PhoneNumber
 from uc3m_travel.attributes.attribute_arrival import Arrivaldate
 from uc3m_travel.attributes.attribute_roomtype import RoomType
 from uc3m_travel.attributes.attribute_creditcard import Creditcard
 from uc3m_travel.attributes.attribute_numday import NumDays
+from uc3m_travel.store.reservation_storedata import SaveReservation
 
 
 class HotelReservation:
@@ -49,6 +51,16 @@ class HotelReservation:
                      "room_type": self.__room_type,
                      }
         return "HotelReservation:" + json_info.__str__()
+    def save_reservation(self, my_reservation):
+        reservation = SaveReservation()
+        reservation.check_item(my_reservation.localizer, "_HotelReservation__localizer", my_reservation.id_card,
+                               "_HotelReservation__id_card")
+        reservation.write_item(my_reservation)
+
+
+
+
+
 
     @property
     def credit_card(self):
@@ -72,3 +84,36 @@ class HotelReservation:
     def localizer(self):
         """Returns the md5 signature"""
         return self.__localizer
+
+
+    @classmethod
+    def create_reservation(cls,id_card, localizer):
+        id_card = Idcard(id_card)._valor_attr
+        localizer = Localizer(localizer)._valor_attr
+
+        reservation = SaveReservation()
+
+        check = reservation.check_item(id_card, "_HotelReservation__id_card",localizer,
+                                       "_HotelReservation__localizer")
+        if check is None:
+            raise HotelManagementException("Error: localizer not found")
+
+        if id_card != reservation["_HotelReservation__id_card"]:
+            raise HotelManagementException("Error: Localizer is not correct for this IdCard")
+
+            # regenrar clave y ver si coincide
+            reservation_date = datetime.fromtimestamp(reservation_date_timestamp)
+
+            with freeze_time(reservation_date):
+                new_reservation = HotelReservation(
+                    credit_card_number=reservation_credit_card,
+                    id_card=reservation_id_card,
+                    num_days=reservation_days,
+                    room_type=reservation_room_type,
+                    arrival=reservation_date_arrival,
+                    name_surname=reservation_name,
+                    phone_number=reservation_phone)
+            if new_reservation.localizer != my_localizer:
+                raise HotelManagementException("Error: "
+                                               "reservation has been manipulated")
+            return new_reservation
