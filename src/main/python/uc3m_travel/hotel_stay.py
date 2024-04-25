@@ -1,28 +1,34 @@
 ''' Class HotelStay (GE2.2) '''
 from datetime import datetime
 import hashlib
+from uc3m_travel.attributes.attribute_idcard import Idcard
+from uc3m_travel.attributes.attribute_roomtype import RoomType
+from uc3m_travel.attributes.attribute_localizer import Localizer
+
 
 class HotelStay():
     """Class for representing hotel stays"""
     def __init__(self,
-                 idcard:str,
-                 localizer:str,
-                 numdays:int,
-                 roomtype:str):
+                 idcard: str,
+                 localizer: str,
+                 numdays: int,
+                 roomtype: str):
         """constructor for HotelStay objects"""
         self.__alg = "SHA-256"
-        self.__type = roomtype
-        self.__idcard = idcard
-        self.__localizer = localizer
+        self.__type = RoomType(roomtype)._valor_attr
+        self.__idcard = Idcard(idcard)._valor_attr
+        self.__localizer = Localizer(localizer)._valor_attr
         justnow = datetime.utcnow()
         self.__arrival = datetime.timestamp(justnow)
-        #timestamp is represented in seconds.miliseconds
-        #to add the number of days we must express num_days in seconds
+        # timestamp is represented in seconds.miliseconds
+        # to add the number of days we must express num_days in seconds
         self.__departure = self.__arrival + (numdays * 24 * 60 * 60)
-        self.__room_key = hashlib.sha256(self.__signature_string().encode()).hexdigest()
+        self.__room_key = (
+            hashlib.sha256(self.__signature_string().encode()).hexdigest())
 
     def __signature_string(self):
-        """Composes the string to be used for generating the key for the room"""
+        """Composes the string to be
+         used for generating the key for the room"""
         return "{alg:" + self.__alg + ",typ:" + self.__type + ",localizer:" + \
             self.__localizer + ",arrival:" + str(self.__arrival) + \
             ",departure:" + str(self.__departure) + "}"

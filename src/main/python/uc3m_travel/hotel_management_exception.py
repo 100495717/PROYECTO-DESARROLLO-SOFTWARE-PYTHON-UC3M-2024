@@ -1,4 +1,6 @@
 """Customized exceptions for the Hotel Management System"""
+
+
 class HotelManagementException(Exception):
     """Custom exception class for Hotel Management"""
     def __init__(self, message):
@@ -11,6 +13,6 @@ class HotelManagementException(Exception):
         return self.__message
 
     @message.setter
-    def message(self,value):
+    def message(self, value):
         """setter for the error message"""
         self.__message = value

@@ -7,10 +7,10 @@ import hashlib
 from unittest import TestCase
 from os import remove
 from freezegun import freeze_time
-from uc3m_travel import (JSON_FILES_PATH,
-                         JSON_FILES_GUEST_ARRIVAL,
-                         HotelManager,
-                         HotelManagementException)
+from uc3m_travel.hotel_manager import HotelManager
+from uc3m_travel.hotel_management_exception import HotelManagementException
+from uc3m_travel.hotel_management_config import JSON_FILES_PATH
+from uc3m_travel.hotel_management_config import JSON_FILES_GUEST_ARRIVAL
 
 class TestHotelReservation(TestCase):
     """Class for testing deliver_product"""
