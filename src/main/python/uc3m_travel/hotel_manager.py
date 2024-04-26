@@ -15,11 +15,11 @@ from uc3m_travel.JsonParser import JsonParser
 
 
 class HotelManager:
+
     class __HotelManager:
         """Class with all the methods for managing reservations and stays"""
         def __init__(self):
             pass
-
 
         def validate_roomkey(self, room_key):
             """validates the roomkey format using a regex"""
@@ -28,8 +28,6 @@ class HotelManager:
             if not myregex.fullmatch(room_key):
                 raise HotelManagementException("Invalid room key format")
             return room_key
-
-
 
         # pylint: disable=too-many-arguments
         def room_reservation(self,
@@ -50,7 +48,7 @@ class HotelManager:
                                               room_type=room_type,
                                               arrival=arrival_date,
                                               num_days=num_days)
-            #guardamos la reserva
+
             HotelReservation.save_reservation(self, my_reservation)
 
             return my_reservation.localizer
@@ -59,11 +57,11 @@ class HotelManager:
             """manages the arrival of a guest with a reservation"""
             input_list = self.checkout_file(file_input)
 
-            id_card, localizer = JsonParser(file_input).parse("Error: file input not found")
+            id_card, localizer = (
+                JsonParser(file_input).parse("Error: ""file input not found"))
 
-
-            reservation = HotelReservation.create_reservation(id_card, localizer)
-
+            reservation = HotelReservation.create_reservation(
+                id_card, localizer)
 
             # compruebo si hoy es la fecha de checkin
             reservation_format = "%d/%m/%Y"
@@ -76,8 +74,8 @@ class HotelManager:
             # genero la room key para ello llamo a Hotel Stay
             my_checkin = HotelStay(idcard=id_card,
                                    numdays=int(reservation.num_days),
-                                   localizer= localizer,
-                                   roomtype= reservation.room_type)
+                                   localizer=localizer,
+                                   roomtype=reservation.room_type)
 
             # Ahora lo guardo en el almacen nuevo de checkin
             # escribo el fichero Json con todos los datos
@@ -86,10 +84,11 @@ class HotelManager:
             # leo los datos del fichero si existe ,
             # y si no existe creo una lista vacia
             store_reservation = StoreDataJson()
-            room_key_list = store_reservation.readjson_create_if_not(file_input)
+            room_key_list = store_reservation.readjson_create_if_not(
+                file_input)
 
             # comprobar que no he hecho otro ckeckin antes
-            self.check_checkin(my_checkin,room_key_list)
+            self.check_checkin(my_checkin, room_key_list)
 
             # añado los datos de mi reserva a la lista , a lo que hubiera
             lista_store = StoreDataJson()
@@ -100,10 +99,10 @@ class HotelManager:
 
             return my_checkin.room_key
 
-       
         def readjson_only(self, file_input):
             try:
-                with open(file_input, "r", encoding="utf-8", newline="") as file:
+                with (open(file_input, "r", encoding="utf-8", newline="")
+                      as file):
                     input_list = json.load(file)
             except FileNotFoundError as ex:
                 raise HotelManagementException(
@@ -118,6 +117,7 @@ class HotelManager:
                 if localizer == item["HotelReservation_localizer"]:
                     return item
                 raise HotelManagementException("Error: localizer not found")
+
         def guest_checkout(self, room_key: str) -> bool:
             """manages the checkout of a guest"""
             self.validate_roomkey(room_key)
@@ -126,10 +126,12 @@ class HotelManager:
             input_list = self.checkout_file(input_file)
 
             # comprobar que esa room_key es la que me han dado
-            departure_date_timestamp = self.check_incheckout(room_key, input_list)
+            departure_date_timestamp = self.check_incheckout(room_key,
+                                                             input_list)
 
             today = datetime.utcnow().date()
-            if datetime.fromtimestamp(departure_date_timestamp).date() != today:
+            if (datetime.fromtimestamp(departure_date_timestamp).date() !=
+                    today):
                 raise HotelManagementException(
                     "Error: today is not the departure day")
 
@@ -162,7 +164,8 @@ class HotelManager:
                 raise HotelManagementException("Error: room key not found")
 
             return departure_date_timestamp
-        def check_checkin(self,my_checkin,input_list):
+
+        def check_checkin(self, my_checkin, input_list):
             for item in input_list:
                 if my_checkin.room_key == item["_HotelStay__room_key"]:
                     raise HotelManagementException("checkin  ya realizado")
@@ -172,18 +175,21 @@ class HotelManager:
                 localizer = input_list["Localizer"]
                 id_card = input_list["IdCard"]
             except KeyError as exception:
-                raise HotelManagementException("Error - Invalid Key in JSON") from exception
+                raise HotelManagementException(
+                    "Error - Invalid Key in JSON") from exception
             return id_card, localizer
 
         def checkout_file(self, input_file):
             try:
-                with open(input_file, "r", encoding="utf-8", newline="") as file:
+                with (open(input_file, "r", encoding="utf-8", newline="")
+                      as file):
                     room_key_list = json.load(file)
             except FileNotFoundError as exception:
                 raise HotelManagementException("Error: file input not found")\
                     from exception
             except json.JSONDecodeError as exception:
-                raise HotelManagementException("JSON Decode Error - Wrong JSON Format") from exception
+                raise HotelManagementException(
+                    "JSON Decode Error - Wrong JSON Format") from exception
             return room_key_list
 
     __instance = None

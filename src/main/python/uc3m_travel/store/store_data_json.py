@@ -23,7 +23,8 @@ class StoreDataJson():
                     item["_HotelReservation__localizer"]):
                 raise HotelManagementException("Reservation already exists")
             if my_reservation.id_card == item["_HotelReservation__id_card"]:
-                raise HotelManagementException("This ID card has another reservation")
+                raise HotelManagementException(
+                    "This ID card has another reservation")
 
     def write_json(self, file_input, input_list):
         try:

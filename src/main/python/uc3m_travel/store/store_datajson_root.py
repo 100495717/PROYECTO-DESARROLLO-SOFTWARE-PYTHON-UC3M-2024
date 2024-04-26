@@ -7,6 +7,7 @@ class StoreDataRoot:
     _input_list = []
     _mensaje_encontrado = ""
     _mensaje_no_encontrado = ""
+
     def __init__(self):
         self.readjson_create_if_not(self._input_file)
 

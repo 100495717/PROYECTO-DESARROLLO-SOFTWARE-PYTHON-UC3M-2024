@@ -54,11 +54,14 @@ class HotelReservation:
                      "room_type": self.__room_type,
                      }
         return "HotelReservation:" + json_info.__str__()
+
     def save_reservation(self, my_reservation):
         reservation = SaveReservation()
-        reservation.check_item(my_reservation.localizer,
-                              "_HotelReservation__localizer", my_reservation.id_card,
-                              "_HotelReservation__id_card")
+        reservation.check_item(
+            my_reservation.localizer,
+            "_HotelReservation__localizer",
+            my_reservation.id_card,
+            "_HotelReservation__id_card")
         reservation.write_item(my_reservation)
 
     @property
@@ -99,9 +102,8 @@ class HotelReservation:
         """property for getting the num_days"""
         return self.__num_days
 
-
     @classmethod
-    def create_reservation(cls,id_card, localizer):
+    def create_reservation(cls, id_card, localizer):
         id_card = Idcard(id_card)._valor_attr
         localizer = Localizer(localizer)._valor_attr
 
@@ -111,10 +113,12 @@ class HotelReservation:
         reservation = cls.find_reservation(localizer, input_list)
 
         if id_card != reservation["_HotelReservation__id_card"]:
-            raise HotelManagementException("Error: Localizer is not correct for this IdCard")
+            raise HotelManagementException(
+                "Error: Localizer is not correct for this IdCard")
 
             # regenrar clave y ver si coincide
-        reservation_date = datetime.fromtimestamp(reservation["_HotelReservation__reservation_date"])
+        reservation_date = datetime.fromtimestamp(
+            reservation["_HotelReservation__reservation_date"])
 
         with freeze_time(reservation_date):
             new_reservation = HotelReservation(
@@ -130,15 +134,18 @@ class HotelReservation:
             raise HotelManagementException("Error: "
                                            "reservation has been manipulated")
         return new_reservation
+
     @classmethod
     def load_reservation_store(self, input_file):
         try:
             with open(input_file, "r", encoding="utf-8", newline="") as file:
                 store_list = json.load(file)
         except FileNotFoundError as exception:
-            raise HotelManagementException("Error: store reservation not found") from exception
+            raise HotelManagementException(
+                "Error: store reservation not found") from exception
         except json.JSONDecodeError as exception:
-            raise HotelManagementException("JSON Decode Error - Wrong JSON Format") from exception
+            raise HotelManagementException(
+                "JSON Decode Error - Wrong JSON Format") from exception
         return store_list
 
     @classmethod
