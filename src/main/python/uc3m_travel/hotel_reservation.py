@@ -3,6 +3,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 import re
+from freezegun import freeze_time
 from uc3m_travel.hotel_management_exception import HotelManagementException
 from uc3m_travel.attributes.attribute_idcard import Idcard
 from uc3m_travel.attributes.attribute_localizer import Localizer
@@ -104,32 +105,31 @@ class HotelReservation:
         id_card = Idcard(id_card)._valor_attr
         localizer = Localizer(localizer)._valor_attr
 
-        reservation = SaveReservation()
+        myreservation = SaveReservation()
 
-        check = reservation.check_item(id_card, "_HotelReservation__id_card",localizer,
-                                       "_HotelReservation__localizer")
-        if check is None:
-            raise HotelManagementException("Error: localizer not found")
+        input_list = myreservation.load_reservation_store()
+        reservation = cls.find_reservation(localizer, input_list)
 
         if id_card != reservation["_HotelReservation__id_card"]:
             raise HotelManagementException("Error: Localizer is not correct for this IdCard")
 
             # regenrar clave y ver si coincide
-            reservation_date = datetime.fromtimestamp(reservation_date_timestamp)
+        reservation_date = datetime.fromtimestamp(reservation["_HotelReservation__reservation_date"])
 
-            with freeze_time(reservation_date):
-                new_reservation = HotelReservation(
-                    credit_card_number=reservation["_HotelReservation__credit_card"],
-                    id_card=reservation["_HotelReservation__id_card"],
-                    num_days=reservation["_HotelReservation__num_days"],
-                    room_type=reservation["_HotelReservation__room_type"],
-                    arrival=reservation["_HotelReservation__arrival"],
-                    name_surname=reservation["_HotelReservation__name_surname"],
-                    phone_number=reservation["_HotelReservation__phone_number"])
-            if new_reservation.localizer != localizer:
-                raise HotelManagementException("Error: "
-                                               "reservation has been manipulated")
-            return new_reservation
+        with freeze_time(reservation_date):
+            new_reservation = HotelReservation(
+                credit_card_number=reservation[
+                    "_HotelReservation__credit_card_number"],
+                id_card=reservation["_HotelReservation__id_card"],
+                num_days=reservation["_HotelReservation__num_days"],
+                room_type=reservation["_HotelReservation__room_type"],
+                arrival=reservation["_HotelReservation__arrival"],
+                name_surname=reservation["_HotelReservation__name_surname"],
+                phone_number=reservation["_HotelReservation__phone_number"])
+        if new_reservation.localizer != localizer:
+            raise HotelManagementException("Error: "
+                                           "reservation has been manipulated")
+        return new_reservation
     @classmethod
     def load_reservation_store(self, input_file):
         try:
@@ -144,6 +144,6 @@ class HotelReservation:
     @classmethod
     def find_reservation(self, localizer, input_list):
         for element in input_list:
-            if localizer == element["HotelReservation_localizer"]:
+            if localizer == element["_HotelReservation__localizer"]:
                 return element
             raise HotelManagementException("Error: localizer not found")

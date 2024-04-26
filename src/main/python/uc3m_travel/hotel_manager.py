@@ -69,7 +69,7 @@ class HotelManager:
             reservation_format = "%d/%m/%Y"
             date_obj = datetime.strptime(reservation.arrival,
                                          reservation_format)
-            if date_obj.date() != datetime.date(timezone.utc).date():
+            if date_obj.date() != datetime.date(datetime.now(timezone.utc)):
                 raise HotelManagementException("Error: "
                                                "today is not reservation date")
 
@@ -180,7 +180,8 @@ class HotelManager:
                 with open(input_file, "r", encoding="utf-8", newline="") as file:
                     room_key_list = json.load(file)
             except FileNotFoundError as exception:
-                raise HotelManagementException("Error: store checkin not found") from exception
+                raise HotelManagementException("Error: file input not found")\
+                    from exception
             except json.JSONDecodeError as exception:
                 raise HotelManagementException("JSON Decode Error - Wrong JSON Format") from exception
             return room_key_list
