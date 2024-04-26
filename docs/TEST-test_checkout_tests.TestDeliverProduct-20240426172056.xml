@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_checkout_tests.TestDeliverProduct-20240426172056" tests="7" file="test_checkout_tests.py" time="0.071" timestamp="2024-04-26T17:20:56" failures="0" errors="0" skipped="0">
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_already_checkout" time="0.031" timestamp="2024-04-26T17:20:56"/>
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_checkin_code_not_found_date_signature" time="0.007" timestamp="2024-04-26T17:20:56"/>
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_checkout_ok" time="0.008" timestamp="2024-04-26T17:20:56"/>
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_guest_checkout_bad_date_signature" time="0.007" timestamp="2024-04-26T17:20:56"/>
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_guest_checkout_no_date" time="0.007" timestamp="2024-04-26T17:20:56"/>
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_guest_checkout_no_store_check_in" time="0.006" timestamp="2024-04-26T17:20:56"/>
+	<testcase classname="test_checkout_tests.TestDeliverProduct" name="test_guest_checkout_store_check_in_is_empty" time="0.006" timestamp="2024-04-26T17:20:56"/>
+</testsuite>
