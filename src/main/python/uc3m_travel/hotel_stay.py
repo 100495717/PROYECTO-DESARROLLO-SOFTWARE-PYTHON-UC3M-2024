@@ -4,7 +4,7 @@ import hashlib
 from uc3m_travel.attributes.attribute_idcard import Idcard
 from uc3m_travel.attributes.attribute_roomtype import RoomType
 from uc3m_travel.attributes.attribute_localizer import Localizer
-
+from uc3m_travel.store.checkout_json_store import SaveCheckout
 
 class HotelStay():
     """Class for representing hotel stays"""
@@ -70,3 +70,29 @@ class HotelStay():
     def departure(self, value):
         """returns the value of the departure date"""
         self.__departure = value
+
+    @classmethod
+    def get_stay_from_room_key(cls, room_key: str):
+        """Creates an instance of the HotelStay class"""
+
+        json_checkout_store = SaveCheckout()
+        if json_checkout_store.find_item("room_key", room_key):
+            raise HotelManagementException("Guest is already out")
+
+        stay = StayJsonStore()
+
+        stay_info = stay.find_stay_checkout("_HotelStay__room_key", RoomKey(room_key).value)
+        print(stay_info)
+        if not stay_info:
+            raise HotelManagementException("Error: room key not found")
+        departure_date = datetime.fromtimestamp(
+            stay_info["_HotelStay__departure"])
+        today = datetime.utcnow().date()
+        if departure_date.date() != today:
+            raise HotelManagementException("Error: today is not the departure day")
+        return HotelStay
+    @classmethod
+    def check_out(cls, room_key: str):
+        json_checkout_store = SaveCheckout()
+        room_checkout = {"room_key": room_key, "checkout_time": datetime.timestamp(datetime.utcnow())}
+        json_checkout_store.add_item(room_checkout)

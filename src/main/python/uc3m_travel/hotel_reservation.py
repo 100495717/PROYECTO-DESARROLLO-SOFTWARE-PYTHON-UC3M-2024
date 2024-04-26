@@ -1,6 +1,7 @@
 """Hotel reservation class"""
 import hashlib
-from datetime import datetime
+import json
+from datetime import datetime, timezone
 import re
 from uc3m_travel.hotel_management_exception import HotelManagementException
 from uc3m_travel.attributes.attribute_idcard import Idcard
@@ -12,6 +13,7 @@ from uc3m_travel.attributes.attribute_roomtype import RoomType
 from uc3m_travel.attributes.attribute_creditcard import Creditcard
 from uc3m_travel.attributes.attribute_numday import NumDays
 from uc3m_travel.store.reservation_storedata import SaveReservation
+from uc3m_travel.store.store_data_json import StoreDataJson
 
 
 class HotelReservation:
@@ -28,7 +30,7 @@ class HotelReservation:
         """constructor of reservation objects"""
         self.__credit_card_number = Creditcard(credit_card_number)._valor_attr
         self.__id_card = Idcard(id_card)._valor_attr
-        justnow = datetime.utcnow()
+        justnow = datetime.now(timezone.utc)
         self.__arrival = Arrivaldate(arrival)._valor_attr
         self.__reservation_date = datetime.timestamp(justnow)
         self.__name_surname = NameSurname(name_surname)._valor_attr
@@ -53,8 +55,9 @@ class HotelReservation:
         return "HotelReservation:" + json_info.__str__()
     def save_reservation(self, my_reservation):
         reservation = SaveReservation()
-        reservation.check_item(my_reservation.localizer, "_HotelReservation__localizer", my_reservation.id_card,
-                               "_HotelReservation__id_card")
+        reservation.check_item(my_reservation.localizer,
+                              "_HotelReservation__localizer", my_reservation.id_card,
+                              "_HotelReservation__id_card")
         reservation.write_item(my_reservation)
 
     @property
@@ -116,14 +119,31 @@ class HotelReservation:
 
             with freeze_time(reservation_date):
                 new_reservation = HotelReservation(
-                    credit_card_number=reservation_credit_card,
-                    id_card=reservation_id_card,
-                    num_days=reservation_days,
-                    room_type=reservation_room_type,
-                    arrival=reservation_date_arrival,
-                    name_surname=reservation_name,
-                    phone_number=reservation_phone)
-            if new_reservation.localizer != my_localizer:
+                    credit_card_number=reservation["_HotelReservation__credit_card"],
+                    id_card=reservation["_HotelReservation__id_card"],
+                    num_days=reservation["_HotelReservation__num_days"],
+                    room_type=reservation["_HotelReservation__room_type"],
+                    arrival=reservation["_HotelReservation__arrival"],
+                    name_surname=reservation["_HotelReservation__name_surname"],
+                    phone_number=reservation["_HotelReservation__phone_number"])
+            if new_reservation.localizer != localizer:
                 raise HotelManagementException("Error: "
                                                "reservation has been manipulated")
             return new_reservation
+    @classmethod
+    def load_reservation_store(self, input_file):
+        try:
+            with open(input_file, "r", encoding="utf-8", newline="") as file:
+                store_list = json.load(file)
+        except FileNotFoundError as exception:
+            raise HotelManagementException("Error: store reservation not found") from exception
+        except json.JSONDecodeError as exception:
+            raise HotelManagementException("JSON Decode Error - Wrong JSON Format") from exception
+        return store_list
+
+    @classmethod
+    def find_reservation(self, localizer, input_list):
+        for element in input_list:
+            if localizer == element["HotelReservation_localizer"]:
+                return element
+            raise HotelManagementException("Error: localizer not found")
